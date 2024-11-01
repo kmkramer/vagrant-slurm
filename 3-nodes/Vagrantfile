@@ -8,13 +8,13 @@ cluster = {
 		:ipaddress => "192.168.56.100",
 		:cpus => "2",
 		:memory => "512"
-    },
+	},
 	:node1 => {
 		:hostname => "node1",
 		:ipaddress => "192.168.56.101",
 		:cpus => "1",
 		:memory => "512",
-    },
+	},
 	:node2 => {
 		:hostname => "node2",
 		:ipaddress => "192.168.56.102",
