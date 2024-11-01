@@ -5,21 +5,22 @@
 cluster = {
     :controller => {
         :hostname => "controller",
-        :ipaddress => "10.0.0.100",
-	:cpus => "2",
-	:memory => "512"
+        :ipaddress => "192.168.56.100",
+		:cpus => "2",
+		:memory => "512"
     },
     :node1 => {
         :hostname => "node1",
-        :ipaddress => "10.0.0.101",
-	:cpus => "1",
-	:memory => "512",
-    }
+        :ipaddress => "192.168.56.101",
+		:cpus => "1",
+		:memory => "512",
+    },
     :node2 => {
         :hostname => "node2",
-        :ipaddress => "10.0.0.102",
-	:cpus => "1",
-	:memory => "1024"
+        :ipaddress => "192.168.56.102",
+		:cpus => "1",
+		:memory => "1024"
+	}
 }
 
 # inline script
@@ -37,15 +38,16 @@ SCRIPT
 # you're doing.
 Vagrant.configure("2") do |global|
 	cluster.each_pair do |name,options|
-	config.vm.define name do |config|
-		#per VM customizations
-		config.vm.box = "ubuntu/jammy64"
-		config.vm.hostname = "#{name}"
-		config.vm.network :private_network, ip: option[:ipaddress]
-		config.vm.provider :virtualbox do |v|
-			#v.customize ["modifyvm", :id, "--memory", option[:memory]]
-			v.cpus = option[:cpus]
-			v.memory = option[:memory]
+		global.vm.define name do |config|
+			#per VM customizations
+			config.vm.box = "ubuntu/jammy64"
+			config.vm.hostname = "#{name}"
+			config.vm.network :private_network, ip: options[:ipaddress]
+			config.vm.provider :virtualbox do |v|
+				#v.customize ["modifyvm", :id, "--memory", option[:memory]]
+				v.cpus = options[:cpus]
+				v.memory = options[:memory]
+			end
 		end
 	end
 end
