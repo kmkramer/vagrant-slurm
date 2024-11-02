@@ -23,31 +23,24 @@ cluster = {
 	}
 }
 
-# inline script
-$script = <<SCRIPT
-apt -y update
-apt -y install foo bar baz
-## update hosts file on each?
-## munge key sync
-## conf files?
-SCRIPT
-
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
 Vagrant.configure("2") do |global|
 	cluster.each_pair do |name,options|
-		global.vm.define name do |config|
+		global.vm.define name do |node|
 			#per VM customizations
-			config.vm.box = "ubuntu/jammy64"
-			config.vm.hostname = "#{name}"
-			config.vm.network :private_network, ip: options[:ipaddress]
-			config.vm.provider :virtualbox do |v|
+			node.vm.box = "ubuntu/jammy64"
+			node.vm.hostname = "#{name}"
+			node.vm.network :private_network, ip: options[:ipaddress]
+			node.vm.provider :virtualbox do |v|
 				#v.customize ["modifyvm", :id, "--memory", option[:memory]]
 				v.cpus = options[:cpus]
 				v.memory = options[:memory]
 			end
+			node.vm.provision "shell", path: "./scripts/slurm-bootstrap.sh"
+			node.vm.provision "shell", reboot: true
 		end
 	end
 end
